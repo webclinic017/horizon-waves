@@ -1,4 +1,4 @@
-﻿absl-py==0.8.1
+absl-py==0.8.1
 aiohttp==3.6.2
 alpaca-trade-api==0.46
 alpha-vantage==2.2.0
@@ -175,7 +175,6 @@ pytrends==4.7.2
 pyttsx3==2.90
 PyTweening==1.0.3
 pytz==2019.3
-pywin32==227
 pywinpty==0.5.7
 PyYAML==3.13
 pyzmq==18.1.1
