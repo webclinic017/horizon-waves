@@ -145,7 +145,6 @@ prompt-toolkit==3.0.2
 protobuf==3.11.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.7
-PyAudio==0.2.11
 PyAutoGUI==0.9.52
 pycodestyle==2.5.0
 pycparser==2.19
