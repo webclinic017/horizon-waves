@@ -39,5 +39,17 @@ class Alpacas():
                 stop_loss={'stop_price': si.get_live_price(i[0]) * 0.99}
             )
 
-        
+    def sellStocks(self, orderList):
+        self.orderList = orderList
 
+        for i in self.orderList:
+            self.api.close_position(i)
+        
+    def getPositions(self):
+        return(self.api.list_positions())
+
+    def cancelAll(self):
+        self.api.cancel_all_orders()
+
+    def closeAll(self):
+        self.api.close_all_positions()
