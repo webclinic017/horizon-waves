@@ -4,8 +4,13 @@ import statistics
 import math
 import csv
 from Alpacas import Alpacas
-from datetime import datetime
+import datetime
 import time
+from pytz import timezone
+
+tz = timezone('EST')
+
+tradingAlpaca = Alpacas('PKO0LCNE1EXA2I416OSW', 'Sn8QODNTF3DmC8heyjE5u9rz8PGbM23T64gIu8Eq')
 
 class posTechnicalAnalysis:
     def __init__(self, hist):
@@ -53,15 +58,38 @@ class posTechnicalAnalysis:
         #self.info.append(self.rectangleTop())
 
         return(self.info)
+
+def selling():
+    tradingAlpaca.cancelAll()
+    now = datetime.datetime.now(tz)
+
+    while len(tradingAlpaca.getPositions()) != 0 and not(int(now.strftime("%M").split("/")[0]) == 30 and now.strftime("%H").split("/")[0] == "11" and datetime.datetime.today().weekday() < 5):
+        positions = tradingAlpaca.getPositions()
+
+        for i in positions:
+            if float(i.unrealized_intraday_plpc) <= -0.01 or float(i.unrealized_intraday_plpc) >= 0.003:
+                tradingAlpaca.sellStocks([i.symbol])
+
+        time.sleep(1)
+        now = datetime.datetime.now(tz)
+
+    tradingAlpaca.closeAll()
+
                 
 def main():
-
+    sold = False
     while True:
         time.sleep(1)
-        now = datetime.now()
+        now = datetime.datetime.now(tz)
         print("In pre cycle at {}".format(str(now)))
         if int(now.strftime("%M").split("/")[0]) > 40 and now.strftime("%H").split("/")[0] == "15" and datetime.datetime.today().weekday() < 5:
             break
+
+        elif ((int(now.strftime("%M").split("/")[0]) > 30 and int(now.strftime("%H").split("/")[0]) == 9) or (int(now.strftime("%H").split("/")[0]) == 10)) and datetime.datetime.today().weekday() < 5:
+            if sold == False:
+                print("In sell mode. Going off radio till positions are all closed")
+                selling()
+                sold = True
                 
     tickerList = []
 
@@ -143,12 +171,11 @@ def main():
             print(e)
             count += 1
 
-    tradingAlpaca = Alpacas('PKO0LCNE1EXA2I416OSW', 'Sn8QODNTF3DmC8heyjE5u9rz8PGbM23T64gIu8Eq')
     tradingRatio = tradingAlpaca.createRatios(orderList)
     print(tradingRatio)
 
     while True:
-        now = datetime.now()
+        now = datetime.datetime.now(tz)
         if int(now.strftime("%M").split("/")[0]) > 57 and now.strftime("%H").split("/")[0] == "15":
             break
     tradingAlpaca.buyStocks(tradingRatio)
